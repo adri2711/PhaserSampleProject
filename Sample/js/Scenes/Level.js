@@ -12,7 +12,6 @@ class Level extends Phaser.Scene
 
     preload()
     {
-        this.highscore = highscoreSerializerInstance.getHighestScore();
     }
 
     create()
@@ -23,21 +22,37 @@ class Level extends Phaser.Scene
         
         this.LoadPools();        
         
-        //this.LoadMap();
-
-        this.bg_back = this.add.tileSprite
-        (0,0,config.width,config.height,'block').setOrigin(0).setScale(2);
+        this.LoadMap();
 
         this.LoadUI();
 
         this.player = new Player(this, config.width / 2, config.height / 2, "hero")
+
+        var playerPosition = highscoreSerializerInstance.GetArray("playerPos");
+        if (playerPosition == []) {
+            playerPosition = [config.width / 2, config.height / 2];
+        }
+        this.player.setPosition(playerPosition[0], playerPosition[1]);
+
         this.cameras.main.startFollow(this.player);
 
         this.fadein = new FadePrefab(this, config.width / 2, config.height / 2, 1000);
+
+        this.time.addEvent(
+            {
+                delay: 1000,
+                callback: this.AutoSave,
+                callbackScope: this,
+                loop: true
+            });
     }
 
     update() {
 
+    }
+
+    AutoSave() {
+        highscoreSerializerInstance.SaveValue("playerPos", [this.player.x, this.player.y]);
     }
 
     LoadSounds()
@@ -65,6 +80,18 @@ class Level extends Phaser.Scene
     LoadMap()
     {
         this.map = this.add.tilemap("map");
+
+        this.map.addTilesetImage("block1");
+        this.map.addTilesetImage("block2");
+
+        var tilesets = ["block1", "block2"]
+
+        this.fg = this.map.createLayer("fg", tilesets);
+        this.map.createLayer("bg", tilesets);
+
+        var indexToCollide = [1]
+
+        this.map.setCollision(indexToCollide, true, true, "fg");
     }
 
     LoadUI()
