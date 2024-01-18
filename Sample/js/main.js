@@ -20,6 +20,11 @@ var config =
         {
             gravity:{y: 0}
         }
+    },
+    fps:
+    {
+        target:60,
+        forceSetTimeOut:true
     }
 };
 
@@ -27,7 +32,8 @@ var gamePrefs =
 {
     PI: 3.1416,
     GAME_WIDTH: config.width,
-    GAME_HEIGHT: config.height
+    GAME_HEIGHT: config.height,
+    PLAYER_SPEED: 200
 }
 
 var game = new Phaser.Game(config);
