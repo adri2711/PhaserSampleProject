@@ -6,13 +6,9 @@ class Player extends Phaser.GameObjects.Sprite
         _scene.add.existing(this);
         _scene.physics.world.enable(this);
         this.scene = _scene;
-        this.body.setSize(16,16).setOffset(8,16);
-        //this.health = gamePrefs.MAX_LIVES;
+        this.health = gamePrefs.PLAYER_HP;
         this.setColliders();
         this.cursors = this.scene.input.keyboard.createCursorKeys();
-
-        //GRAVITY OFF
-        this.body.setAllowGravity(false);
     }
 
     preUpdate(time,delta)
@@ -31,50 +27,81 @@ class Player extends Phaser.GameObjects.Sprite
         );        
     }
 
+    TakeDamage() {
+        this.health--;
+        
+        if (this.health <= 0) {
+            this.Die();
+        }
+    }
+
+    Die() {
+
+    }
+
     HandleMovement() {
+        this.movementX = 0;
+        this.movementY = 0; 
+        this.Input();
+        this.Movement();   
+    }
+
+    Input(){
+        if(this.cursors.right.isDown)
+        {
+            this.movementX += gamePrefs.PLAYER_SPEED;            
+        }
         if(this.cursors.left.isDown)
         {
-            this.body.setVelocityX(-gamePrefs.PLAYER_SPEED);
-            this.setFlipX(true);
-            //this.anims.play('run',true);
-        } else if(this.cursors.right.isDown)
-        {
-            this.body.setVelocityX(gamePrefs.PLAYER_SPEED);
-            this.setFlipX(false);
-            //this.anims.play('run',true);
-        } else
-        {
-            this.body.setVelocityX(0);
-            //this.anims.stop().setFrame(0);
-        }    
-        
-        if(this.cursors.up.isDown)
-        {
-            this.body.setVelocityY(-gamePrefs.PLAYER_SPEED);
-            this.setFlipY(false);
-            //this.anims.play('run',true);
-        } else if(this.cursors.down.isDown)
-        {
-            this.body.setVelocityY(gamePrefs.PLAYER_SPEED);
-            this.setFlipY(false);
-            //this.anims.play('run',true);
-        } else
-        {
-            this.body.setVelocityY(0);
-            //this.anims.stop().setFrame(0);
-        }    
-
-        /*
-        if(this.cursors.space.isDown
-          && this.body.onFloor()
-          && Phaser.Input.Keyboard.DownDuration(this.cursors.space,250))
-        {
-            this.body.setVelocityY(-gamePrefs.HERO_JUMP);
+            this.movementX -= gamePrefs.PLAYER_SPEED;            
         }
 
-        if(!this.body.onFloor())
+        if(this.cursors.up.isDown)
         {
-            this.anims.stop().setFrame(6);
-        }*/
+            this.movementY -= gamePrefs.PLAYER_SPEED;            
+        }
+        if(this.cursors.down.isDown)
+        {
+            this.movementY += gamePrefs.PLAYER_SPEED;            
+        }  
+    }
+
+    Movement() {
+        var diagonalMultiplier = this.movementX != 0 && this.movementY != 0 ? 0.707 : 1.0 //slow when walking diagonally
+        
+        this.body.velocity.x = this.movementX * diagonalMultiplier;
+        this.body.velocity.y = this.movementY * diagonalMultiplier;
+
+        this.PlayAnimations(this.movementX, this.movementY);
+    }
+
+    PlayAnimations(movementX, movementY){
+
+        if(movementX != 0)
+        {
+            if(movementX > 0)
+            {
+                this.anims.play("playerWalkRight", true);
+            }
+            else
+            {
+                this.anims.play("playerWalkLeft", true);
+            }
+        }
+        else if(movementY != 0)
+        {
+            if(movementY > 0)
+            {
+                this.anims.play("playerWalkDown", true);
+            }
+            else
+            {
+                this.anims.play("playerWalkUp", true);
+            }
+        }
+        else if(movementX == 0 && movementY == 0)
+        {
+            this.anims.play("playerIdle", true);
+        }  
     }
 }

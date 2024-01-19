@@ -19,9 +19,10 @@ class Preloader extends Phaser.Scene
         this.load.image("block1", "block1.png");
         this.load.image("block2", "block2.png");
 
-        this.load.spritesheet("hero", "hero.png", {frameWidth: 32, frameHeight: 32});
+        this.load.spritesheet("hero", "hero.png", {frameWidth:120,frameHeight:130});
 
         this.load.spritesheet('healthUI','health.png', {frameWidth:128,frameHeight:28});
+        this.load.spritesheet('gem','gem.png', {frameWidth:32,frameHeight:32});
 
         this.load.image('menuBackground','menu_background.png');
 

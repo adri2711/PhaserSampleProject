@@ -10,15 +10,9 @@ class Level extends Phaser.Scene
         //this.example = data.example
     }
 
-    preload()
-    {
-    }
-
     create()
     {
-        this.loadAnimations();
-
-        this.LoadSounds();
+        this.LoadAnimations();
         
         this.LoadPools();        
         
@@ -26,38 +20,40 @@ class Level extends Phaser.Scene
 
         this.LoadUI();
 
-        this.player = new Player(this, config.width / 2, config.height / 2, "hero")
+        //Player Setup
+        this.player = new Player(this, 50, 100, "hero")
+        .setScale(0.25); //<--- adjust this with actual size of sprite
 
+        //EXAMPLE: load player position from save
+        /*
         var playerPosition = highscoreSerializerInstance.GetArray("playerPos");
-        if (playerPosition == []) {
+        if (playerPosition == []) { // save is empty
             playerPosition = [config.width / 2, config.height / 2];
         }
-        this.player.setPosition(playerPosition[0], playerPosition[1]);
+        this.player.setPosition(playerPosition[0], playerPosition[1]);*/
 
         this.cameras.main.startFollow(this.player);
 
+        //Other Entities
+        this.item = new Item(this, config.width / 2, config.height / 3, "gem", "gemAnim");
+
+        //Trigger fadein when the scene starts
         this.fadein = new FadePrefab(this, config.width / 2, config.height / 2, 1000);
 
+        //Autosave
+        /*
         this.time.addEvent(
             {
                 delay: 1000,
                 callback: this.AutoSave,
                 callbackScope: this,
                 loop: true
-            });
-    }
-
-    update() {
-
+            });*/
     }
 
     AutoSave() {
+        //Save Player Pos
         highscoreSerializerInstance.SaveValue("playerPos", [this.player.x, this.player.y]);
-    }
-
-    LoadSounds()
-    {
-        //this.testSound = this.sound.add("testSound")
     }
 
     LoadPools()
@@ -65,16 +61,52 @@ class Level extends Phaser.Scene
         //this.testPool = this.add.group()
     }
 
-    loadAnimations()
-    {/*
+    LoadAnimations()
+    {
+        //ITEM
         this.anims.create(
             {
-                key: 'testAnim',
-                frames:this.anims.generateFrameNumbers('testSpriteSheet', {start:0, end: 7}),
+                key: 'gemAnim',
+                frames:this.anims.generateFrameNumbers('gem', {start:0, end: 4}),
                 frameRate: 15,
                 repeat: -1
             });
-            */
+        //PLAYER
+        this.anims.create(
+            {
+                key: 'playerIdle',
+                frames:this.anims.generateFrameNumbers('hero', {start:0, end: 0}),
+                frameRate: 10,
+                repeat: -1
+            });
+        this.anims.create(
+            {
+                key: 'playerWalkDown',
+                frames:this.anims.generateFrameNumbers('hero', {start:0, end: 9}),
+                frameRate: 10,
+                repeat: -1
+            });
+        this.anims.create(
+            {
+                key: 'playerWalkLeft',
+                frames:this.anims.generateFrameNumbers('hero', {start:10, end: 19}),
+                frameRate: 10,
+                repeat: -1
+            });
+        this.anims.create(
+            {
+                key: 'playerWalkUp',
+                frames:this.anims.generateFrameNumbers('hero', {start:20, end: 29}),
+                frameRate: 10,
+                repeat: -1
+            });  
+        this.anims.create(
+            {
+                key: 'playerWalkRight',
+                frames:this.anims.generateFrameNumbers('hero', {start:30, end: 39}),
+                frameRate: 10,
+                repeat: -1
+            });  
     }
 
     LoadMap()
@@ -84,10 +116,11 @@ class Level extends Phaser.Scene
         this.map.addTilesetImage("block1");
         this.map.addTilesetImage("block2");
 
+        //set up 2 layers
         var tilesets = ["block1", "block2"]
 
         this.fg = this.map.createLayer("fg", tilesets);
-        this.map.createLayer("bg", tilesets);
+        this.bg = this.map.createLayer("bg", tilesets);
 
         var indexToCollide = [1]
 

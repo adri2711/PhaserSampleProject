@@ -18,7 +18,8 @@ var config =
         default: "arcade",
         arcade:
         {
-            gravity:{y: 0}
+            gravity: {y: 0},
+            debug: false
         }
     },
     fps:
@@ -33,7 +34,8 @@ var gamePrefs =
     PI: 3.1416,
     GAME_WIDTH: config.width,
     GAME_HEIGHT: config.height,
-    PLAYER_SPEED: 200
+    PLAYER_SPEED: 200,
+    PLAYER_HP: 5
 }
 
 var game = new Phaser.Game(config);

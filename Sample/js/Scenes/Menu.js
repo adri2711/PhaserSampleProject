@@ -38,6 +38,7 @@ class Menu extends Phaser.Scene
         .on('pointerout', () => this.playButtonRestState() );
 
         //Ranking
+        /*
         this.rankingButton = this.add.text(config.width/2, config.height / 2 + 120, 'RANKING', {
             fontFamily: 'ARCADEPI',
             fill: this.defaultColor
@@ -48,6 +49,7 @@ class Menu extends Phaser.Scene
         .on('pointerdown', () => this.rankingButtonClickState())
         .on('pointerover', () => this.rankingButtonHoverState())
         .on('pointerout', () => this.rankingButtonRestState() );
+        */
     }
 
     playButtonClickState()
